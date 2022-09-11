@@ -9,6 +9,7 @@ import (
 	"io"
 	"math"
 	"math/rand"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -18,9 +19,11 @@ import (
 func main() {
 	//excercise_1()
 	//excercise_2()
-	excercise_4()
-	excercise_5(os.Stdout)
-
+	//excercise_4()
+	//excercise_5(os.Stdout)
+	//excercise_7()
+	//excercise_8()
+	excercise_9()
 }
 
 func excercise_1() {
@@ -111,3 +114,62 @@ func excercise_5(out io.Writer) {
 }
 
 // #TODO excersie_6
+
+func excercise_7() {
+	for _, url := range os.Args[1:] {
+		resp, err := http.Get(url)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
+			os.Exit(1)
+		}
+		b, err := io.Copy(os.Stdout, resp.Body)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "fetch: reading %s: %v\n", url, err)
+			os.Exit(1)
+		}
+		fmt.Printf("%s", b)
+	}
+}
+
+func excercise_8() {
+	for _, url := range os.Args[1:] {
+		prefix := "http://"
+		if strings.HasPrefix(url, prefix) == false {
+			url = strings.Join([]string{prefix, url}, "")
+		}
+		resp, err := http.Get(url)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
+			os.Exit(1)
+		}
+		b, err := io.Copy(os.Stdout, resp.Body)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "fetch: reading %s: %v\n", url, err)
+			os.Exit(1)
+		}
+		fmt.Printf("%s", b)
+	}
+}
+
+func excercise_9() {
+	for _, url := range os.Args[1:] {
+		prefix := "http://"
+		if strings.HasPrefix(url, prefix) == false {
+			url = strings.Join([]string{prefix, url}, "")
+		}
+		resp, err := http.Get(url)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
+			os.Exit(1)
+		}
+		b, err := io.Copy(os.Stdout, resp.Body)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "fetch: reading %s: %v\n", url, err)
+			os.Exit(1)
+		}
+		status := resp.Status
+		fmt.Printf("%s\n%s\n", b, status)
+	}
+}
+
+//TODO excercise 10
