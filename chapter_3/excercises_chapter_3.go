@@ -2,10 +2,15 @@ package main
 
 import (
 	"fmt"
+	"image"
+	"image/color"
+	"image/png"
 	"io"
 	"log"
 	"math"
+	"math/cmplx"
 	"net/http"
+	"os"
 	"sync"
 )
 
@@ -19,13 +24,15 @@ const (
 )
 
 var sin30, cos30 = math.Sin(angle), math.Cos(angle) // sin(30°), cos(30°)
-var color string
+var col string
 
 func main() {
 	//excercise_1() //easy was not done
 	//excercise_2()
 	//excercise_3() //done in the web
-	excercise_4()
+	//excercise_4()
+	//excercise_5() //done in the web
+	excercise_6() //todo 6-9
 }
 
 func excercise_2() {
@@ -39,7 +46,7 @@ func excercise_2() {
 			cx, cy := corner(i, j+1)
 			dx, dy := corner(i+1, j+1)
 			fmt.Printf("<polygon points='%g,%g %g,%g %g,%g %g,%g' stroke= '%v' fill = 'white'/>\n",
-				ax, ay, bx, by, cx, cy, dx, dy, color)
+				ax, ay, bx, by, cx, cy, dx, dy, col)
 		}
 	}
 	fmt.Println("</svg>")
@@ -63,9 +70,9 @@ func f(x, y float64) float64 {
 		return 0
 	}
 	if r > 12 {
-		color = "red"
+		col = "red"
 	} else {
-		color = "blue"
+		col = "blue"
 	}
 	return math.Sin(r) / r
 }
@@ -104,4 +111,72 @@ func plot3d() string {
 	}
 	print_out = print_out + fmt.Sprint("</svg>")
 	return print_out
+}
+
+func excercise_6() {
+	const (
+		xmin, ymin, xmax, ymax = -2, -2, +2, +2
+		width, height          = 1024, 1024
+	)
+	img := image.NewRGBA(image.Rect(0, 0, width, height))
+	for py := 0; py < height; py++ {
+		y := float64(py)/height*(ymax-ymin) + ymin
+		for px := 0; px < width; px++ {
+			x := float64(px)/width*(xmax-xmin) + xmin
+			z := complex(x, y)
+			// Image point (px, py) represents complex value z.
+			img.Set(px, py, mandelbrot(z))
+		}
+	}
+	png.Encode(os.Stdout, img) // NOTE: ignoring errors
+}
+
+func Map[T, V any](ts []T, fn func(T) V) []V {
+	result := make([]V, len(ts))
+	for i, t := range ts {
+		result[i] = fn(t)
+	}
+	return result
+}
+
+func mandelbrot(z complex128) color.Color {
+	const (
+		iterations = 200
+		contrast   = 4
+	)
+
+	var v complex128
+	x := real(z)
+	y := float64(imag(z))
+	supersampling := []color.Color{}
+
+	for i := 0.0; i < 2; i++ {
+		x = x + i/2
+		for j := 0.0; j < 2; j++ {
+			y = y + i/2
+			for n := uint8(0); n < iterations; n++ {
+				v = v*v + z
+				if cmplx.Abs(v) > 2 {
+					supersampling = append(supersampling, color.Gray{255 - contrast*n})
+				} else {
+					supersampling = append(supersampling, color.Black)
+				}
+			}
+		}
+	}
+	supersamplingR := Map(supersampling, func(item color.Color) float64 {
+		item = uint32(item.R)
+		item |= item << 8
+	})
+
+	supersamplingG := Map(supersampling, func(item color.Color) float64 {
+		r = uint32(c.R)
+		r |= r << 8
+	})
+
+	supersamplingB := Map(supersampling, func(item color.Color) float64 {
+		r = uint32(c.R)
+		r |= r << 8
+	})
+	return color.Black //aca hay que devolver el promedio
 }
