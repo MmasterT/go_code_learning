@@ -33,7 +33,7 @@ func main() {
 	//excercise_5() //done in the web
 	//excercise_6() //todo 6-9
 	//excercise_10() //excercise 10 and 11 together
-	excercise_12()
+	//excercise_12()
 }
 
 func excercise_2() {
@@ -242,6 +242,8 @@ func anagram(s1 string, s2 string) bool {
 		for j, value_r2 := range s2 {
 
 			if value_r1 == value_r2 {
+				fmt.Printf("i = %v\n", i)
+				fmt.Printf("j = %v\n", j)
 				r1 = delChar(r1, i)
 				r2 = delChar(r2, j)
 				fmt.Println("deleting a pair of chars...")
@@ -249,8 +251,8 @@ func anagram(s1 string, s2 string) bool {
 			s1 = string(r1)
 			s2 = string(r2)
 			fmt.Println("searching anagram...")
-			if len(r1) != len(r2) && r1 != nil && r2 != nil {
-				fmt.Println("different length, aha!")
+			if len(s1) != len(s2) && r1 != nil && r2 != nil {
+				fmt.Printf("%s != %s\ndifferent length, aha!\n", s1, s2)
 				return false
 			}
 		}
@@ -260,9 +262,12 @@ func anagram(s1 string, s2 string) bool {
 }
 
 func delChar(s []rune, index int) []rune {
-	if index < len(s)-1 {
+	if index < len(string(s))-1 && index > 0 {
 		return append(s[0:index], s[index+1:]...)
+
+	} else if index == len(string(s))-1 {
+		return append(s[0:index])
 	} else {
-		return append(s[0:])
 	}
+	return s[1:]
 }
