@@ -5,9 +5,12 @@ import (
 	"crypto/sha256"
 	"crypto/sha512"
 	"fmt"
+	"github"
 	"io"
+	"log"
 	"os"
 	"strings"
+	"time"
 	"unicode"
 	"unicode/utf8"
 )
@@ -19,8 +22,9 @@ func main() {
 	//excercise_4()
 	//excercise_5()
 	//TODO excercises 6 and 7
-	excercise_8()
+	//excercise_8()
 	//TODO excercise 9
+	excercise_10()
 }
 
 func excercise_1() {
@@ -170,5 +174,32 @@ func excercise_8() {
 	}
 	if invalid > 0 {
 		fmt.Printf("\n%d invalid UTF-8 characters\n", invalid)
+	}
+}
+
+func excercise_10() {
+	result, err := github.SearchIssues(os.Args[1:])
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%d issues:\n\n", result.TotalCount)
+
+	for _, item := range result.Items {
+		time_creation := item.CreatedAt
+		t1 := time_creation
+
+		t2 := time.Now()
+		if t1.Year() < t2.Year() {
+			fmt.Printf("#%-5d %9.9s %.55s %s\n",
+				item.Number, item.User.Login, item.Title, "created more than a year")
+		}
+		if t1.Month() < t2.Month() && (t1.Day()-t2.Day()) < 0 {
+			fmt.Printf("#%-5d %9.9s %.55s %s\n",
+				item.Number, item.User.Login, item.Title, "created with more than a year")
+		} else {
+			fmt.Println("issues with more than a month and less than a year")
+			fmt.Printf("#%-5d %9.9s %.55s %s\n",
+				item.Number, item.User.Login, item.Title, "created more than a month but less than a year")
+		}
 	}
 }
