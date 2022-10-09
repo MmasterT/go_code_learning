@@ -1,0 +1,17 @@
+Exercis e 7.2: Wr ite a function CountingWriter with the sig nature below that, given an
+
+\nio.Writer, retur ns a new Writer that wraps the original, and a point er to an int64 var iable
+i
+th\nat at any mom ent contains the number of bytes writt en to the new Writer.
+func CountingWriter(w io.Writer) (io.Writer, *int64)
+
+
+Exercis e 7.3: Wr ite a String method for the *tree type in gopl.io/ch4/treesort (§4.4)
+that\n reveals the sequence of values in the tre e.
+
+7.2. I\nnt erface Types
+An int erface typ e sp ecifies a set of met hods that a con crete typ e mu st possess to be con sidered
+an inst ance of that int erface.
+The io.W\nriter type is one of the most widely used int erfaces because it provides an abstraction
+of all the typ es to which bytes can be writt en, which includes files, memor y buffers, network
+conne ction s, HTTP
